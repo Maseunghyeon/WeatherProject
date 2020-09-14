@@ -33,21 +33,15 @@
 	
 	
 	<select id="test" resultType="String">
-		SELECT season FROM tbl_season WHERE s_idx = 1;
+		SELECT season FROM tbl_season WHERE s_idx = 1
 	</select>
 	
 	
 	<select id="getHit" resultType="my.vo.UserMenuHitVO">
-		DELETE FROM testing_table;
-
-		INSERT INTO testing_table
-		    SELECT u_idx, m_idx, COUNT(m_idx) AS hit
-		    FROM tbl_history
-		    GROUP BY m_idx, u_idx
-		    ORDER BY u_idx
-		;
-		
-		SELECT * FROM testing_table;
+		SELECT u_idx, m_idx, COUNT(m_idx) AS hit
+	    FROM tbl_history
+	    GROUP BY m_idx, u_idx
+	    ORDER BY u_idx
 	</select>
 	
 
@@ -76,4 +70,19 @@
 		
 		SPOOL OFF
 	</select> -->
+	
+	
+	
+	<!-- 
+		DELETE FROM testing_table;
+
+		INSERT INTO testing_table
+		    SELECT u_idx, m_idx, COUNT(m_idx) AS hit
+		    FROM tbl_history
+		    GROUP BY m_idx, u_idx
+		    ORDER BY u_idx
+		;
+		
+		SELECT * FROM testing_table;
+	 -->
  

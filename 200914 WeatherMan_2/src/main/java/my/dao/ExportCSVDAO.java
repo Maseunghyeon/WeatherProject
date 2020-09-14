@@ -1,22 +1,46 @@
-package my.util;
+package my.dao;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
-import my.dao.HistoryDAO;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import my.vo.UserMenuHitVO;
 
 // 우리 서비스의 DB내의 'user_menu_hit' 데이터가 csv로 자동으로 엑스포트 되는 클래스
-public class ExportCSVUtil {
-	// 메인메소드
-	public static boolean exportCSV() {
+public class ExportCSVDAO {
 	
+	@Autowired
+	private HistoryDAO hDao;
+	
+	// 메인메소드
+	public boolean exportCSV() {
+		// 엑스포트 할 데이터 리스트를 DAO메소드로 가져오기
+		List<UserMenuHitVO> exportList = hDao.getUserMenuHit(); //---- 여기서 (잘와야되는데) 왜 자꾸 NullPointerException이 뜨지??
+		// savePath 정하기
+		// dateDir값을 현재날짜를 얻어서 값으로 삼아주기
+		//SimpleDateFormat format = new SimpleDateFormat("yyyy년 MM월 dd일 hh시 mm분 ss초");
+		Date date = Calendar.getInstance().getTime(); //현재 날짜 데이터
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd",Locale.getDefault());
+		String dateDir = dateFormat.format(date);
+		
+		//String dateDir = "2020.09.14_1";
+		String savePath = "C:/csv/" + dateDir;
+		String fileName = "["+dateDir+"]user_menu_hit";
+		// csv로 내보내기
+		boolean result = exportUserMenuHit(exportList, savePath, fileName);
+		
+		return result;
 		/* 위에꺼가 잘 안되서, 직접 List를 만들어주고 csv로 잘 export되나 테스트하기위해 만든 것=> 잘 실행됨!
 		List<UserMenuHitVO> exportList = new ArrayList<UserMenuHitVO>();
 		for(int i=1;i<=5;i++) {
@@ -34,17 +58,7 @@ public class ExportCSVUtil {
 			System.out.println();
 		}*/
 		
-		// 엑스포트 할 데이터 리스트를 DAO메소드로 가져오기
-		List<UserMenuHitVO> exportList = HistoryDAO.getUserMenuHit(); //---- 여기서 (잘와야되는데) 왜 자꾸 NullPointerException이 뜨지??
-		// savePath 정하기
-		String dateDir = "2020.09.14_2";
-		String savePath = "C:/csv/" + dateDir;
-		String fileName = "["+dateDir+"]user_menu_hit";
-		// csv로 내보내기
-		boolean result = exportUserMenuHit(exportList, savePath, fileName);
-		
-		return result;
-	}
+	}// end exportCSV()
 	
 		
 	

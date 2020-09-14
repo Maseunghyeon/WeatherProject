@@ -37,6 +37,7 @@
     <!-- 사용자가 필요에 따라 정의한 DAO들을 생성한다. -->
     <bean id="menuDao" class="my.dao.MenuDAO"/>
     <bean id="hDao" class="my.dao.HistoryDAO"/>
+    <bean id="csvDao" class="my.dao.ExportCSVDAO"/>
     <bean id="menuUtil" class="my.util.MenuUtil"/>
 
 

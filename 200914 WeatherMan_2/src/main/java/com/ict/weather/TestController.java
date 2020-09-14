@@ -11,14 +11,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
-import my.util.ExportCSVUtil;
+import my.dao.ExportCSVDAO;
+import my.dao.HistoryDAO;
 import my.vo.MenuVO;
+import my.vo.UserMenuHitVO;
 
 @Controller
 public class TestController {
 	
 	@Autowired
 	private SqlSessionTemplate ss;
+	@Autowired
+	private HistoryDAO hDao;
+	
+	// HistoryDAO의 getUserMenuHit() 이 잘 작동하는지 확인하기 위한 매핑 메소드
+	@RequestMapping("/checkHistoryMethod")
+	public ModelAndView checkHistoryMethod() {
+		List<UserMenuHitVO> testList = hDao.getUserMenuHit(); // HistoryDAO 클래스에 대한 접근을 static으로 하지 않고, 스프링에서의 매커니즘대로 IOC적 bean객체활용을 하니까, 정상적으로 작동된다!
+		ModelAndView mv = new ModelAndView();
+		mv.addObject("testList",testList);
+		mv.setViewName("test/testPage");
+		return mv;
+	}
+	
+	
+	
 	
 	// 지도와 로드뷰 토글 기능 테스트 컨트롤러 메소드
 	@RequestMapping("/mapAndRoadViewToggle")
@@ -64,18 +81,6 @@ public class TestController {
 		return mv;
 	}
 	
-	
-	@RequestMapping(value="/export", method=RequestMethod.POST)
-	public ModelAndView export() {
-		boolean result = ExportCSVUtil.exportCSV();
-		
-		ModelAndView mv = new ModelAndView();
-		
-		mv.addObject("result", result);
-		mv.setViewName("test/exportResult");
-		
-		return mv;
-	}
 	
 	
 
