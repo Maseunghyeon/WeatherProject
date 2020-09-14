@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="weather">
+	<!-- mybatis는 파라미터 바인딩 방식이기 때문에, 파라미터값이 문자열이라고 '#{}' 식으로 홑따옴표를 사용해줄 필요 없다. -->
+	<select id="getMenus" resultType="my.vo.MenuVO" parameterType="java.util.Map">
+		<if test="season_b != null">
+			SELECT *
+			FROM (  SELECT *
+			        FROM (SELECT * FROM tbl_menu
+			              WHERE season LIKE '%'||#{season_a}||'%'
+			              ORDER BY DBMS_RANDOM.RANDOM)
+			        WHERE rownum &lt;= #{menu_a_count} 
+			        UNION
+			        SELECT *
+			        FROM (SELECT * FROM tbl_menu
+			              WHERE season LIKE '%'||#{season_b}||'%'
+			              ORDER BY DBMS_RANDOM.RANDOM)
+			        WHERE rownum &lt;= #{menu_b_count}
+			)
+			ORDER BY DBMS_RANDOM.RANDOM
+		</if>
+		<if test="season_b == null">
+			SELECT *
+	        FROM (SELECT * FROM tbl_menu
+	              WHERE season LIKE '%'||#{season_a}||'%'
+	              ORDER BY DBMS_RANDOM.RANDOM)
+	        WHERE rownum &lt;= #{menu_a_count}
+		</if>
+	</select>
+	
+	
+	<select id="test" resultType="String">
+		SELECT season FROM tbl_season WHERE s_idx = 1;
+	</select>
+	
+	
+	<select id="getHit" resultType="my.vo.UserMenuHitVO">
+		DELETE FROM testing_table;
+
+		INSERT INTO testing_table
+		    SELECT u_idx, m_idx, COUNT(m_idx) AS hit
+		    FROM tbl_history
+		    GROUP BY m_idx, u_idx
+		    ORDER BY u_idx
+		;
+		
+		SELECT * FROM testing_table;
+	</select>
+	
+
+
+</mapper>
+<!-- mybatis환경에선 spool 사용가능한지 모르겠음 
+		<select id="gen_csv" parameterType="String">
+		SET ECHO OFF
+		SET VERIFY OFF
+		SET TRIMSPOOL ON
+		SET TRIMOUT ON
+		SET LINESIZE 30000
+		SET PAGESIZE 0
+		SET TIMING OFF
+		SET TIME OFF
+		SET FEED OFF
+		SET TERMOUT OFF
+		SET COLSEP ','
+		
+		SPOOL C:\Users\MAIN\Desktop\test\csv\#{param}.csv
+		
+		select u_idx ||','|| m_idx ||','|| count(m_idx) AS hit
+		from tbl_history
+		group by m_idx, u_idx
+		order by u_idx;
+		
+		SPOOL OFF
+	</select> -->
+ 
